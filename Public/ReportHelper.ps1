@@ -14,10 +14,6 @@ function Write-DigestReport {
       ,
       [Parameter(Mandatory=$true)]
       [string]
-      $runDirName
-      ,
-      [Parameter(Mandatory=$true)]
-      [string]
       $rfolderName
       ,
       [Parameter(Mandatory=$true)]
@@ -42,7 +38,7 @@ function Write-DigestReport {
     $jsonInfo = $reportInfo.json
     $jsonInfo | ForEach-Object {
       $r = $null
-      $r = Get-ReportJson -label "$($_.searchLabel)" -logDir "$logDir" -numOfDays $numOfDays -runDirName "$runDirName"
+      $r = Get-ReportJson -label "$($_.searchLabel)" -logDir "$logDir" -numOfDays $numOfDays
       New-Item -ItemType Directory -Force -Path "$logDir/$rFolderName/$lDate" | Out-Null
       $r | Out-File -Encoding utf8 -FilePath "$logDir/$rFolderName/$lDate/$($_.fileName).json"
     }
@@ -50,7 +46,7 @@ function Write-DigestReport {
     $txtInfo = $reportInfo.txt
     $txtInfo | ForEach-Object {
       $r = $null
-      $r = Get-ReportUnstructured -label "$($_.searchLabel)" -logDir "$logDir" -numOfDays $numOfDays -runDirName "$runDirName"
+      $r = Get-ReportUnstructured -label "$($_.searchLabel)" -logDir "$logDir" -numOfDays $numOfDays
       New-Item -ItemType Directory -Force -Path "$logDir/$rFolderName/$lDate" | Out-Null
       $r | Out-File -Encoding utf8 -FilePath "$logDir/$rFolderName/$lDate/$($_.fileName).txt"
     }
@@ -72,14 +68,10 @@ function Get-ReportJson {
       [Parameter(Mandatory=$true)]
       [int]
       $numOfDays
-      ,
-      [Parameter(Mandatory=$true)]
-      [string]
-      $runDirName
   )
 
   Set-StrictMode -Version 3
-  return Get-Report -label "$label" -logDir "$logDir" -numOfDays $numOfDays -runDirName $runDirName -dataConverter Get-ReportForFileJson | ConvertTo-Json
+  return Get-Report -label "$label" -logDir "$logDir" -numOfDays $numOfDays -dataConverter Get-ReportForFileJson | ConvertTo-Json
 }
 
 function Get-ReportUnstructured {
@@ -96,14 +88,10 @@ function Get-ReportUnstructured {
       [Parameter(Mandatory=$true)]
       [int]
       $numOfDays
-      ,
-      [Parameter(Mandatory=$true)]
-      [string]
-      $runDirName
   )
 
   Set-StrictMode -Version 3
-  return Get-Report -label "$label" -logDir "$logDir" -numOfDays $numOfDays -runDirName $runDirName -dataConverter Get-ReportForFileUnstructured
+  return Get-Report -label "$label" -logDir "$logDir" -numOfDays $numOfDays -dataConverter Get-ReportForFileUnstructured
 }
 
 function Get-Report {
@@ -120,10 +108,6 @@ function Get-Report {
       [Parameter(Mandatory=$true)]
       [int]
       $numOfDays
-      ,
-      [Parameter(Mandatory=$true)]
-      [string]
-      $runDirName
       ,
       [Parameter(Mandatory=$true)]
       $dataConverter
