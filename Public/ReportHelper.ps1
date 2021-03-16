@@ -116,7 +116,7 @@ function Get-Report {
   )
 
   Set-StrictMode -Version 3
-  $dayDirs = $null
+  $dayDirs = @()
   [array]$dayDirs = Get-ChildItem -Path "$logDir" | Where-Object {
     # Keep folders that can be parsed to days and are in the numOfDays range
     try {
@@ -130,10 +130,10 @@ function Get-Report {
     }
   }
 
-  $datas = $null
+  $datas = @()
   [array]$datas = $dayDirs | ForEach-Object {
-    $reports = $null
-    $ds = $null
+    $reports = @()
+    $ds = @()
     $fullDayDirName = "$($_.FullName)/$runFolderName"
     [array]$reports = Get-ChildItem -Path "$fullDayDirName"
     [array]$ds = $reports | ForEach-Object {
@@ -206,7 +206,7 @@ function Get-ReportForFileJson {
 
   Set-StrictMode -Version 3
   $content = Get-Content -Path "$filePath"
-  $data = $null
+  $data = @()
   [array]$data = ($content | Select-String -Pattern "$label" -Context 0,1 | ForEach-Object {
     $_.Context.PostContext
   })
@@ -233,7 +233,7 @@ function Get-ReportForFileUnstructured {
 
   Set-StrictMode -Version 3
   $content = Get-Content -Path "$filePath"
-  $data = $null
+  $data = @()
   [array]$data = ($content | Select-String -Pattern "$label")
   if ($null -eq $data) { return $null }
   $data = Get-UnstructuredData -data $data -fName "$fName"
