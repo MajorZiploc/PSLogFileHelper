@@ -117,17 +117,33 @@ function Get-Report {
 
   $datas = @()
   [array]$datas = $dayDirs | ForEach-Object {
-    $reports = @()
-    $ds = @()
-    $fullDayDirName = "$($_.FullName)/$runFolderName"
-    [array]$reports = Get-ChildItem -Path "$fullDayDirName"
-    [array]$ds = $reports | ForEach-Object {
-      (& $dataConverter -label $label -filePath "$($_.FullName)" -fName "$($_.FullName)")
-    } | Where-Object { $null -ne $_ }
-    $ds
+    Get-ReportForDay -dayDir "$($_.FullName)/$runFolderName" -label "$label" -dataConverter $dataConverter
   }
 
   return $datas
+}
+
+function Get-ReportForDay {
+  [CmdletBinding()]
+  param (
+      [Parameter(Mandatory=$true)]
+      [string]
+      $dayDir
+      ,
+      [Parameter(Mandatory=$true)]
+      [string]
+      $label
+      ,
+      [Parameter(Mandatory=$true)]
+      $dataConverter
+  )
+  $reports = @()
+  $ds = @()
+  [array]$reports = Get-ChildItem -Path "$dayDir"
+  [array]$ds = $reports | ForEach-Object {
+    (& $dataConverter -label "$label" -filePath "$($_.FullName)" -fName "$($_.FullName)")
+  } | Where-Object { $null -ne $_ }
+  return $ds
 }
 
 function Get-Json {
