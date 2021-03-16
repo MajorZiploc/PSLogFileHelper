@@ -10,6 +10,10 @@ function Write-DigestReport {
       ,
       [Parameter(Mandatory=$true)]
       [string]
+      $runSubDir
+      ,
+      [Parameter(Mandatory=$true)]
+      [string]
       $reportOutDir
       ,
       [Parameter(Mandatory=$true)]
@@ -26,7 +30,7 @@ function Write-DigestReport {
     [array]$jsonInfo = $reportInfo.json
     $jsonInfo | ForEach-Object {
       $r = $null
-      $r = Get-ReportJsonDateRange -label "$($_.searchLabel)" -logDir "$logDir" -startReportDate $startReportDate -endReportDate $endReportDate
+      $r = Get-ReportJsonDateRange -label "$($_.searchLabel)" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate
       New-Item -ItemType Directory -Force -Path "$reportOutDir" | Out-Null
       $r | Out-File -Encoding utf8 -FilePath "$reportOutDir/$($_.fileName).json"
     }
@@ -34,7 +38,7 @@ function Write-DigestReport {
     [array]$txtInfo = $reportInfo.txt
     $txtInfo | ForEach-Object {
       $r = $null
-      $r = Get-ReportTxtDateRange -label "$($_.searchLabel)" -logDir "$logDir" -startReportDate $startReportDate -endReportDate $endReportDate
+      $r = Get-ReportTxtDateRange -label "$($_.searchLabel)" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate
       New-Item -ItemType Directory -Force -Path "$reportOutDir" | Out-Null
       $r | Out-File -Encoding utf8 -FilePath "$reportOutDir/$($_.fileName).txt"
     }
@@ -57,6 +61,10 @@ function Get-ReportJsonDateRange {
       $logDir
       ,
       [Parameter(Mandatory=$true)]
+      [string]
+      $runSubDir
+      ,
+      [Parameter(Mandatory=$true)]
       [datetime]
       $startReportDate
       ,
@@ -66,7 +74,7 @@ function Get-ReportJsonDateRange {
   )
 
   Set-StrictMode -Version 3
-  return Get-Report -label "$label" -logDir "$logDir" -startReportDate $startReportDate -endReportDate $endReportDate -dataConverter Get-ReportJsonFile | ConvertTo-Json
+  return Get-Report -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -dataConverter Get-ReportJsonFile | ConvertTo-Json
 }
 
 function Get-ReportTxtDateRange {
@@ -81,6 +89,10 @@ function Get-ReportTxtDateRange {
       $logDir
       ,
       [Parameter(Mandatory=$true)]
+      [string]
+      $runSubDir
+      ,
+      [Parameter(Mandatory=$true)]
       [datetime]
       $startReportDate
       ,
@@ -90,7 +102,7 @@ function Get-ReportTxtDateRange {
   )
 
   Set-StrictMode -Version 3
-  return Get-Report -label "$label" -logDir "$logDir" -startReportDate $startReportDate -endReportDate $endReportDate -dataConverter Get-ReportTxtFile
+  return Get-Report -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -dataConverter Get-ReportTxtFile
 }
 
 function Get-Report {
@@ -103,6 +115,10 @@ function Get-Report {
       [Parameter(Mandatory=$true)]
       [string]
       $logDir
+      ,
+      [Parameter(Mandatory=$true)]
+      [string]
+      $runSubDir
       ,
       [Parameter(Mandatory=$true)]
       $dataConverter
@@ -131,7 +147,7 @@ function Get-Report {
 
   $datas = @()
   [array]$datas = $dayDirs | ForEach-Object {
-    Get-ReportForDay -dayDir "$($_.FullName)/$runFolderName" -label "$label" -dataConverter $dataConverter
+    Get-ReportForDay -dayDir "$($_.FullName)/$runSubDir" -label "$label" -dataConverter $dataConverter
   }
 
   return $datas
