@@ -2,27 +2,27 @@ function Write-DigestReport {
   [CmdletBinding()]
   param (
       [Parameter(Mandatory=$true)]
-      $reportInfo=$report
+      $reportInfo
       ,
       [Parameter(Mandatory=$true)]
       [string]
-      $logDir=$logFolder
+      $logDir
       ,
       [Parameter(Mandatory=$true)]
       [int]
-      $numOfDays=$digestReportOverNDays
+      $numOfDays
       ,
       [Parameter(Mandatory=$true)]
       [string]
-      $runDirName=$runFolderName
+      $runDirName
       ,
       [Parameter(Mandatory=$true)]
       [string]
-      $rfolderName=$reportFolderName
+      $rfolderName
       ,
       [Parameter(Mandatory=$true)]
       [string]
-      $lDate=$logDate
+      $lDate
   )
 
   $shouldWriteReport = $false
@@ -66,15 +66,15 @@ function Get-ReportJson {
       ,
       [Parameter(Mandatory=$true)]
       [string]
-      $logDir=$logFolder
+      $logDir
       ,
       [Parameter(Mandatory=$true)]
       [int]
-      $numOfDays=$digestReportOverNDays
+      $numOfDays
       ,
       [Parameter(Mandatory=$true)]
       [string]
-      $runDirName=$runFolderName
+      $runDirName
   )
 
   return Get-Report -label "$label" -logDir "$logDir" -numOfDays $numOfDays -runDirName $runDirName -dataConverter Get-ReportForFileJson | ConvertTo-Json
@@ -89,15 +89,15 @@ function Get-ReportUnstructured {
       ,
       [Parameter(Mandatory=$true)]
       [string]
-      $logDir=$logFolder
+      $logDir
       ,
       [Parameter(Mandatory=$true)]
       [int]
-      $numOfDays=$digestReportOverNDays
+      $numOfDays
       ,
       [Parameter(Mandatory=$true)]
       [string]
-      $runDirName=$runFolderName
+      $runDirName
   )
 
   return Get-Report -label "$label" -logDir "$logDir" -numOfDays $numOfDays -runDirName $runDirName -dataConverter Get-ReportForFileUnstructured
@@ -112,15 +112,15 @@ function Get-Report {
       ,
       [Parameter(Mandatory=$true)]
       [string]
-      $logDir=$logFolder
+      $logDir
       ,
       [Parameter(Mandatory=$true)]
       [int]
-      $numOfDays=$digestReportOverNDays
+      $numOfDays
       ,
       [Parameter(Mandatory=$true)]
       [string]
-      $runDirName=$runFolderName
+      $runDirName
       ,
       [Parameter(Mandatory=$true)]
       $dataConverter
