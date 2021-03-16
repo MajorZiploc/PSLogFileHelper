@@ -15,45 +15,30 @@ function Write-DigestReport {
       [Parameter(Mandatory=$true)]
       [string]
       $reportOutDir
-      ,
-      [Parameter(Mandatory=$true)]
-      [AllowNull()]
-      [Nullable[datetime]]
-      $lastDigestReportWrittenDate
   )
 
   Set-StrictMode -Version 3
-  $shouldWriteReport = $false
-  [datetime]$today = Get-Date
-  $lDate = $today.ToString('yyyy-MM-dd')
-  if ($null -eq $lastDigestReportWrittenDate){
-    $shouldWriteReport = $true
-  } else {
-    $tspan = $today - $lastDigestReportWrittenDate
-    $shouldWriteReport = $tspan.Days -ge $numOfDays
-  }
-
-  if($shouldWriteReport) {
-
+  try {
     [array]$jsonInfo = $reportInfo.json
     $jsonInfo | ForEach-Object {
       $r = $null
       $r = Get-ReportJson -label "$($_.searchLabel)" -logDir "$logDir" -numOfDays $numOfDays
-      New-Item -ItemType Directory -Force -Path "$reportOutDir/$lDate" | Out-Null
-      $r | Out-File -Encoding utf8 -FilePath "$reportOutDir/$lDate/$($_.fileName).json"
+      New-Item -ItemType Directory -Force -Path "$reportOutDir" | Out-Null
+      $r | Out-File -Encoding utf8 -FilePath "$reportOutDir/$($_.fileName).json"
     }
 
     [array]$txtInfo = $reportInfo.txt
     $txtInfo | ForEach-Object {
       $r = $null
       $r = Get-ReportUnstructured -label "$($_.searchLabel)" -logDir "$logDir" -numOfDays $numOfDays
-      New-Item -ItemType Directory -Force -Path "$reportOutDir/$lDate" | Out-Null
-      $r | Out-File -Encoding utf8 -FilePath "$reportOutDir/$lDate/$($_.fileName).txt"
+      New-Item -ItemType Directory -Force -Path "$reportOutDir" | Out-Null
+      $r | Out-File -Encoding utf8 -FilePath "$reportOutDir/$($_.fileName).txt"
     }
 
+    return @{success=$true, $error=$null}
+  } catch {
+    return @{success=$false, $error=$_}
   }
-
-  return @{DidWriteReport=$shouldWriteReport}
 }
 
 function Get-ReportJson {
