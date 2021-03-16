@@ -26,7 +26,7 @@ function Write-DigestReport {
     [array]$jsonInfo = $reportInfo.json
     $jsonInfo | ForEach-Object {
       $r = $null
-      $r = Get-ReportJson -label "$($_.searchLabel)" -logDir "$logDir" -startReportDate $startReportDate -endReportDate $endReportDate
+      $r = Get-ReportJsonDateRange -label "$($_.searchLabel)" -logDir "$logDir" -startReportDate $startReportDate -endReportDate $endReportDate
       New-Item -ItemType Directory -Force -Path "$reportOutDir" | Out-Null
       $r | Out-File -Encoding utf8 -FilePath "$reportOutDir/$($_.fileName).json"
     }
@@ -45,7 +45,7 @@ function Write-DigestReport {
   }
 }
 
-function Get-ReportJson {
+function Get-ReportJsonDateRange {
   [CmdletBinding()]
   param (
       [Parameter(Mandatory=$true)]
