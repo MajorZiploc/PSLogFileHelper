@@ -90,7 +90,7 @@ function Get-ReportTxtDateRange {
   )
 
   Set-StrictMode -Version 3
-  return Get-Report -label "$label" -logDir "$logDir" -startReportDate $startReportDate -endReportDate $endReportDate -dataConverter Get-ReportForFileUnstructured
+  return Get-Report -label "$label" -logDir "$logDir" -startReportDate $startReportDate -endReportDate $endReportDate -dataConverter Get-ReportTxtFile
 }
 
 function Get-Report {
@@ -226,7 +226,7 @@ function Get-ReportForFileJson {
   return $data
 }
 
-function Get-ReportForFileUnstructured {
+function Get-ReportTxtFile {
   [CmdletBinding()]
   param (
       [Parameter(Mandatory=$true)]
