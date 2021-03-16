@@ -9,12 +9,16 @@ function Write-DigestReport {
       $logDir
       ,
       [Parameter(Mandatory=$true)]
-      [int]
-      $numOfDays
+      [string]
+      $reportOutDir
+      ,
+      [Parameter(Mandatory=$true)]
+      [datetime]
+      $startReportDate
       ,
       [Parameter(Mandatory=$true)]
       [string]
-      $reportOutDir
+      $endReportDate
   )
 
   Set-StrictMode -Version 3
@@ -22,7 +26,7 @@ function Write-DigestReport {
     [array]$jsonInfo = $reportInfo.json
     $jsonInfo | ForEach-Object {
       $r = $null
-      $r = Get-ReportJson -label "$($_.searchLabel)" -logDir "$logDir" -numOfDays $numOfDays
+      $r = Get-ReportJson -label "$($_.searchLabel)" -logDir "$logDir" -startReportDate $startReportDate -endReportDate $endReportDate
       New-Item -ItemType Directory -Force -Path "$reportOutDir" | Out-Null
       $r | Out-File -Encoding utf8 -FilePath "$reportOutDir/$($_.fileName).json"
     }
@@ -30,7 +34,7 @@ function Write-DigestReport {
     [array]$txtInfo = $reportInfo.txt
     $txtInfo | ForEach-Object {
       $r = $null
-      $r = Get-ReportUnstructured -label "$($_.searchLabel)" -logDir "$logDir" -numOfDays $numOfDays
+      $r = Get-ReportUnstructured -label "$($_.searchLabel)" -logDir "$logDir" -startReportDate $startReportDate -endReportDate $endReportDate
       New-Item -ItemType Directory -Force -Path "$reportOutDir" | Out-Null
       $r | Out-File -Encoding utf8 -FilePath "$reportOutDir/$($_.fileName).txt"
     }
@@ -53,12 +57,16 @@ function Get-ReportJson {
       $logDir
       ,
       [Parameter(Mandatory=$true)]
-      [int]
-      $numOfDays
+      [datetime]
+      $startReportDate
+      ,
+      [Parameter(Mandatory=$true)]
+      [string]
+      $endReportDate
   )
 
   Set-StrictMode -Version 3
-  return Get-Report -label "$label" -logDir "$logDir" -numOfDays $numOfDays -dataConverter Get-ReportForFileJson | ConvertTo-Json
+  return Get-Report -label "$label" -logDir "$logDir" -startReportDate $startReportDate -endReportDate $endReportDate -dataConverter Get-ReportForFileJson | ConvertTo-Json
 }
 
 function Get-ReportUnstructured {
@@ -73,12 +81,16 @@ function Get-ReportUnstructured {
       $logDir
       ,
       [Parameter(Mandatory=$true)]
-      [int]
-      $numOfDays
+      [datetime]
+      $startReportDate
+      ,
+      [Parameter(Mandatory=$true)]
+      [string]
+      $endReportDate
   )
 
   Set-StrictMode -Version 3
-  return Get-Report -label "$label" -logDir "$logDir" -numOfDays $numOfDays -dataConverter Get-ReportForFileUnstructured
+  return Get-Report -label "$label" -logDir "$logDir" -startReportDate $startReportDate -endReportDate $endReportDate -dataConverter Get-ReportForFileUnstructured
 }
 
 function Get-Report {
@@ -93,23 +105,25 @@ function Get-Report {
       $logDir
       ,
       [Parameter(Mandatory=$true)]
-      [int]
-      $numOfDays
+      $dataConverter
       ,
       [Parameter(Mandatory=$true)]
-      $dataConverter
+      [datetime]
+      $startReportDate
+      ,
+      [Parameter(Mandatory=$true)]
+      [string]
+      $endReportDate
   )
 
   Set-StrictMode -Version 3
   $dayDirs = @()
   [array]$dayDirs = Get-ChildItem -Path "$logDir" | Where-Object {
-    # Keep folders that can be parsed to days and are in the numOfDays range
+    # Keep folders that can be parsed to days and are in the date range
     try {
       $dateFolder = $null
-      $reportStartDate = $null
       [datetime]$dateFolder = $_.Name
-      [datetime]$reportStartDate = (Get-Date).AddDays(-1*$numOfDays)
-      return $dateFolder -ge $reportStartDate
+      return $dateFolder -ge $startReportDate -and $dateFolder -le $endReportDate
     } catch {
       return $false
     }
