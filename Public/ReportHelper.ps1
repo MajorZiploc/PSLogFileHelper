@@ -14,7 +14,7 @@ function Write-DigestReport {
       ,
       [Parameter(Mandatory=$true)]
       [string]
-      $rfolderName
+      $reportOutDir
       ,
       [Parameter(Mandatory=$true)]
       [string]
@@ -39,16 +39,16 @@ function Write-DigestReport {
     $jsonInfo | ForEach-Object {
       $r = $null
       $r = Get-ReportJson -label "$($_.searchLabel)" -logDir "$logDir" -numOfDays $numOfDays
-      New-Item -ItemType Directory -Force -Path "$logDir/$rFolderName/$lDate" | Out-Null
-      $r | Out-File -Encoding utf8 -FilePath "$logDir/$rFolderName/$lDate/$($_.fileName).json"
+      New-Item -ItemType Directory -Force -Path "$reportOutDir/$lDate" | Out-Null
+      $r | Out-File -Encoding utf8 -FilePath "$reportOutDir/$lDate/$($_.fileName).json"
     }
 
     $txtInfo = $reportInfo.txt
     $txtInfo | ForEach-Object {
       $r = $null
       $r = Get-ReportUnstructured -label "$($_.searchLabel)" -logDir "$logDir" -numOfDays $numOfDays
-      New-Item -ItemType Directory -Force -Path "$logDir/$rFolderName/$lDate" | Out-Null
-      $r | Out-File -Encoding utf8 -FilePath "$logDir/$rFolderName/$lDate/$($_.fileName).txt"
+      New-Item -ItemType Directory -Force -Path "$reportOutDir/$lDate" | Out-Null
+      $r | Out-File -Encoding utf8 -FilePath "$reportOutDir/$lDate/$($_.fileName).txt"
     }
 
   }
