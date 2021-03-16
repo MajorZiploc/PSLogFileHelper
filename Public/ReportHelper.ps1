@@ -141,7 +141,7 @@ function Get-ReportForDay {
   $ds = @()
   [array]$reports = Get-ChildItem -Path "$dayDir"
   [array]$ds = $reports | ForEach-Object {
-    (& $dataConverter -label "$label" -filePath "$($_.FullName)" -fName "$($_.FullName)")
+    (& $dataConverter -label "$label" -filePath "$($_.FullName)")
   } | Where-Object { $null -ne $_ }
   return $ds
 }
@@ -155,14 +155,14 @@ function Get-Json {
       ,
       [Parameter(Mandatory=$true)]
       [string]
-      $fName
+      $filePath
   )
 
   Set-StrictMode -Version 3
   try {
     $json = $data | ForEach-Object {
       $j = $_ | ConvertFrom-Json
-      Add-Member -InputObject $j -NotePropertyName "___Log___File___Name___" -NotePropertyValue "$fName"
+      Add-Member -InputObject $j -NotePropertyName "___Log___File___Name___" -NotePropertyValue "$filePath"
       $j
     }
     # $json = "[$($data -join ',')]" | ConvertFrom-Json
@@ -182,11 +182,11 @@ function Get-UnstructuredData {
       ,
       [Parameter(Mandatory=$true)]
       [string]
-      $fName
+      $filePath
   )
 
   Set-StrictMode -Version 3
-  return "File Name: $fName`n$($data -join '`n')"
+  return "File Name: $filePath`n$($data -join '`n')"
 }
 
 function Get-ReportForFileJson {
@@ -199,10 +199,6 @@ function Get-ReportForFileJson {
       [Parameter(Mandatory=$true)]
       [string]
       $filePath
-      ,
-      [Parameter(Mandatory=$true)]
-      [string]
-      $fName
   )
 
   Set-StrictMode -Version 3
@@ -212,7 +208,7 @@ function Get-ReportForFileJson {
     $_.Context.PostContext
   })
   if ($null -eq $data) { return $null }
-  $data = Get-Json -data $data -fName "$fName"
+  $data = Get-Json -data $data -filePath "$filePath"
   return $data
 }
 
@@ -226,10 +222,6 @@ function Get-ReportForFileUnstructured {
       [Parameter(Mandatory=$true)]
       [string]
       $filePath
-      ,
-      [Parameter(Mandatory=$true)]
-      [string]
-      $fName
   )
 
   Set-StrictMode -Version 3
@@ -237,6 +229,6 @@ function Get-ReportForFileUnstructured {
   $data = @()
   [array]$data = ($content | Select-String -Pattern "$label")
   if ($null -eq $data) { return $null }
-  $data = Get-UnstructuredData -data $data -fName "$fName"
+  $data = Get-UnstructuredData -data $data -filePath "$filePath"
   return $data
 }
