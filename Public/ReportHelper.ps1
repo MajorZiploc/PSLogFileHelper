@@ -15,19 +15,16 @@ function Write-DigestReport {
       [Parameter(Mandatory=$true)]
       [string]
       $reportOutDir
-      ,
-      [Parameter(Mandatory=$true)]
-      [string]
-      $lDate
   )
 
   Set-StrictMode -Version 3
   $shouldWriteReport = $false
+  [datetime]$today = Get-Date
+  $lDate = $today.ToString('yyyy-MM-dd')
   if ($null -eq $lastState.lastDigestReportWritten){
     $shouldWriteReport = $true
   } else {
     [datetime]$lastDigestReportWrittenDate = $lastState.lastDigestReportWritten
-    [datetime]$today = Get-Date
     $tspan = $today - $lastDigestReportWrittenDate
     $shouldWriteReport = $tspan.Days -ge $numOfDays
   }
