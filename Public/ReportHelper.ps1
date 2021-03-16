@@ -25,6 +25,7 @@ function Write-DigestReport {
       $lDate
   )
 
+  Set-StrictMode -Version 3
   $shouldWriteReport = $false
   if ($null -eq $lastState.lastDigestReportWritten){
     $shouldWriteReport = $true
@@ -77,6 +78,7 @@ function Get-ReportJson {
       $runDirName
   )
 
+  Set-StrictMode -Version 3
   return Get-Report -label "$label" -logDir "$logDir" -numOfDays $numOfDays -runDirName $runDirName -dataConverter Get-ReportForFileJson | ConvertTo-Json
 }
 
@@ -100,6 +102,7 @@ function Get-ReportUnstructured {
       $runDirName
   )
 
+  Set-StrictMode -Version 3
   return Get-Report -label "$label" -logDir "$logDir" -numOfDays $numOfDays -runDirName $runDirName -dataConverter Get-ReportForFileUnstructured
 }
 
@@ -126,6 +129,7 @@ function Get-Report {
       $dataConverter
   )
 
+  Set-StrictMode -Version 3
   $dayDirs = $null
   [array]$dayDirs = Get-ChildItem -Path "$logDir" | Where-Object {
     # Keep folders that can be parsed to days and are in the numOfDays range
@@ -166,6 +170,8 @@ function Get-Json {
       [string]
       $fName
   )
+
+  Set-StrictMode -Version 3
   try {
     $json = $data | ForEach-Object {
       $j = $_ | ConvertFrom-Json
@@ -191,6 +197,8 @@ function Get-UnstructuredData {
       [string]
       $fName
   )
+
+  Set-StrictMode -Version 3
   return "File Name: $fName`n$($data -join '`n')"
 }
 
@@ -210,6 +218,7 @@ function Get-ReportForFileJson {
       $fName
   )
 
+  Set-StrictMode -Version 3
   $content = Get-Content -Path "$filePath"
   $data = $null
   [array]$data = ($content | Select-String -Pattern "$label" -Context 0,1 | ForEach-Object {
@@ -236,11 +245,11 @@ function Get-ReportForFileUnstructured {
       $fName
   )
 
+  Set-StrictMode -Version 3
   $content = Get-Content -Path "$filePath"
   $data = $null
   [array]$data = ($content | Select-String -Pattern "$label")
   if ($null -eq $data) { return $null }
   $data = Get-UnstructuredData -data $data -fName "$fName"
   return $data
-
 }
