@@ -176,7 +176,7 @@ function Get-ReportForDay {
   return $ds
 }
 
-function Get-Json {
+function Get-JsonDataConverter {
   [CmdletBinding()]
   param (
       [Parameter(Mandatory=$true)]
@@ -238,7 +238,7 @@ function Get-ReportJsonFile {
     $_.Context.PostContext
   })
   if ($null -eq $data) { return $null }
-  $data = Get-Json -data $data -filePath "$filePath"
+  $data = Get-JsonDataConverter -data $data -filePath "$filePath"
   return $data
 }
 
