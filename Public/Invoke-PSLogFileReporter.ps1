@@ -62,7 +62,3 @@ New-Variable -Name logTime -Value $($startTime.ToString("HH-mm-ss")) -Option Rea
     $lastState | ConvertTo-Json > $lastStateFilePath
   }
 }
-
-# Remove the following line if you are trying to write a powershell module that is importable in other powershell projects/modules
-Invoke-PSLogFileReporter -ErrorAction Stop
-
