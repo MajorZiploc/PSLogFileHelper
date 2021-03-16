@@ -15,7 +15,7 @@
 # See the black listed variables file to see what variables to not reassign:
 # By default, if you try and reassign a black listed variable, it will throw an error.
 #   It is possible to override the value with force, but it is highly recommended not to!
-#  LogFileReporter/BlackListedVariables.txt
+#  PSLogFileReporter/BlackListedVariables.txt
 
 function Program {
   #[CmdletBinding()]

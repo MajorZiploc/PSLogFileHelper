@@ -1,7 +1,7 @@
 ﻿# Only edit this file if you intend to write a powershell module or need to use secrets or change the environment
 # If you intend to use this as a powershell project, then edit the program file in the private directory
 
-function Invoke-LogFileReporter {
+function Invoke-PSLogFileReporter {
   [CmdletBinding()]
   param ()
 
@@ -64,5 +64,5 @@ New-Variable -Name logTime -Value $($startTime.ToString("HH-mm-ss")) -Option Rea
 }
 
 # Remove the following line if you are trying to write a powershell module that is importable in other powershell projects/modules
-Invoke-LogFileReporter -ErrorAction Stop
+Invoke-PSLogFileReporter -ErrorAction Stop
 
