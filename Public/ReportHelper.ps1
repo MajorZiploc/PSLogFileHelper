@@ -203,7 +203,7 @@ function Get-JsonDataConverter {
   }
 }
 
-function Get-UnstructuredData {
+function Get-TxtDataConverter {
   [CmdletBinding()]
   param (
       [Parameter(Mandatory=$true)]
@@ -259,6 +259,6 @@ function Get-ReportTxtFile {
   $data = @()
   [array]$data = ($content | Select-String -Pattern "$label")
   if ($null -eq $data) { return $null }
-  $data = Get-UnstructuredData -data $data -filePath "$filePath"
+  $data = Get-TxtDataConverter -data $data -filePath "$filePath"
   return $data
 }
