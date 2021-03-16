@@ -74,7 +74,7 @@ function Get-ReportJsonDateRange {
   )
 
   Set-StrictMode -Version 3
-  return Get-Report -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -dataConverter Get-ReportJsonFile | ConvertTo-Json
+  return Get-ReportDateRange -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -dataConverter Get-ReportJsonFile | ConvertTo-Json
 }
 
 function Get-ReportTxtDateRange {
@@ -102,10 +102,10 @@ function Get-ReportTxtDateRange {
   )
 
   Set-StrictMode -Version 3
-  return Get-Report -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -dataConverter Get-ReportTxtFile
+  return Get-ReportDateRange -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -dataConverter Get-ReportTxtFile
 }
 
-function Get-Report {
+function Get-ReportDateRange {
   [CmdletBinding()]
   param (
       [Parameter(Mandatory=$true)]
