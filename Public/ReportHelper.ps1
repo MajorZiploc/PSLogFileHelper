@@ -35,7 +35,7 @@ function Write-DigestReport {
 
   if($shouldWriteReport) {
 
-    $jsonInfo = $reportInfo.json
+    [array]$jsonInfo = $reportInfo.json
     $jsonInfo | ForEach-Object {
       $r = $null
       $r = Get-ReportJson -label "$($_.searchLabel)" -logDir "$logDir" -numOfDays $numOfDays
@@ -43,7 +43,7 @@ function Write-DigestReport {
       $r | Out-File -Encoding utf8 -FilePath "$reportOutDir/$lDate/$($_.fileName).json"
     }
 
-    $txtInfo = $reportInfo.txt
+    [array]$txtInfo = $reportInfo.txt
     $txtInfo | ForEach-Object {
       $r = $null
       $r = Get-ReportUnstructured -label "$($_.searchLabel)" -logDir "$logDir" -numOfDays $numOfDays
