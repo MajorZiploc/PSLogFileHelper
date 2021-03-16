@@ -15,22 +15,25 @@ function Write-DigestReport {
       [Parameter(Mandatory=$true)]
       [string]
       $reportOutDir
+      ,
+      [Parameter(Mandatory=$true)]
+      [AllowNull()]
+      [Nullable[datetime]]
+      $lastDigestReportWrittenDate
   )
 
   Set-StrictMode -Version 3
   $shouldWriteReport = $false
   [datetime]$today = Get-Date
   $lDate = $today.ToString('yyyy-MM-dd')
-  if ($null -eq $lastState.lastDigestReportWritten){
+  if ($null -eq $lastDigestReportWrittenDate){
     $shouldWriteReport = $true
   } else {
-    [datetime]$lastDigestReportWrittenDate = $lastState.lastDigestReportWritten
     $tspan = $today - $lastDigestReportWrittenDate
     $shouldWriteReport = $tspan.Days -ge $numOfDays
   }
 
   if($shouldWriteReport) {
-    $lastState.lastDigestReportWritten = $lDate
 
     $jsonInfo = $reportInfo.json
     $jsonInfo | ForEach-Object {
@@ -49,6 +52,8 @@ function Write-DigestReport {
     }
 
   }
+
+  return @{DidWriteReport=$shouldWriteReport}
 }
 
 function Get-ReportJson {
