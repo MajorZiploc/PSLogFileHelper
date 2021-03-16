@@ -1,0 +1,26 @@
+﻿
+These variables are set in the public invoke functions
+If they are overridden, then it can lead to unexpected behavior
+
+DO NOT USE THE FOLLOWING VARIABLES.
+
+  $appConfig
+  $lastState
+  $lastStateFilePath
+  $thisScriptName 
+  $settingsFolder
+  $secrets 
+  $logFile
+  $logFolder
+  $logDate
+  $logTime
+  $logFile
+  $summaryFile
+  $environ
+  $startTime
+
+FAQ:
+Why are these variables written to with force and are read-only? Why not use constants?
+  In some run environments, marking these variables as constants/read-only will throw errors if the program is run multiple times
+  That is why we are using read-only and setting them with force
+

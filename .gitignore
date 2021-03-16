@@ -1,0 +1,23 @@
+﻿Private/secrets.json
+@
+logs/*
+.vscode
+bin/
+obj/
+.ionide/
+/debug/
+
+# Visual Studio IDE directory
+.vs/
+
+# Ignore executables
+*.exe
+*.msi
+*.appx
+*.msix
+
+# Ignore binaries and symbols
+*.pdb
+*.dll
+*.wixpdb
+@
