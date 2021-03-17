@@ -302,9 +302,13 @@ function Get-ReportTxtFile {
 
   $content = Get-Content -Path "$filePath"
   $data = @()
-  [array]$data = ($content | Select-String -Pattern "$label" -Context 0,$numOfLinesAfterMatch | ForEach-Object {
-    "$($_.Line)`n$($_.Context.PostContext -join "`n")`n"
-  })
+  if ($numOfLinesAfterMatch -eq 0) {
+    [array]$data = $content | Select-String -Pattern "$label"
+  } else {
+    [array]$data = ($content | Select-String -Pattern "$label" -Context 0,$numOfLinesAfterMatch | ForEach-Object {
+      "$($_.Line)`n$($_.Context.PostContext -join "`n")`n"
+    })
+  }
   if ($null -eq $data) { return $null }
   $data = Get-TxtDataConverter -data $data -filePath "$filePath" -filePathKeyName "$filePathKeyName"
   return $data
