@@ -16,4 +16,13 @@ Foreach ($import in @($Public + $Private)) {
 # Export Public functions ($Public.BaseName) for WIP modules
 # Set variables visible to the module and its functions only
 
-Export-ModuleMember -Function $Public.Basename
+Export-ModuleMember -Function "Write-DigestReport"
+Export-ModuleMember -Function "Get-ReportJsonDateRange"
+Export-ModuleMember -Function "Get-ReportTxtDateRange"
+Export-ModuleMember -Function "Get-ReportDateRange"
+Export-ModuleMember -Function "Get-ReportForDay"
+Export-ModuleMember -Function "Get-JsonDataConverter"
+Export-ModuleMember -Function "Get-TxtDataConverter"
+Export-ModuleMember -Function "Get-ReportJsonFile"
+Export-ModuleMember -Function "Get-ReportTxtFile"
+
