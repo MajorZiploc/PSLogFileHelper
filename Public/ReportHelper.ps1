@@ -30,7 +30,8 @@ function Write-DigestReport {
     $jsonInfo | ForEach-Object {
       $r = $null
       $filePathKeyName = if(Get-Member -InputObject $_ -Name "filePathKeyName" -MemberType Properties) { $_.filePathKeyName } { "___Log___File___Name___" }
-      $r = Get-ReportJsonDateRange -label "$($_.searchLabelPattern)" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName"
+      $numOfLinesAfterMatch = if(Get-Member -InputObject $_ -Name "numOfLinesAfterMatch" -MemberType Properties) { $_.numOfLinesAfterMatch } { 1 }
+      $r = Get-ReportJsonDateRange -label "$($_.searchLabelPattern)" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName" -numOfLinesAfterMatch $numOfLinesAfterMatch
       New-Item -ItemType Directory -Force -Path "$reportOutDir" | Out-Null
       $r | Out-File -Encoding utf8 -FilePath "$reportOutDir/$($_.fileName).json"
     }
@@ -39,7 +40,8 @@ function Write-DigestReport {
     $txtInfo | ForEach-Object {
       $r = $null
       $filePathKeyName = if(Get-Member -InputObject $_ -Name "filePathKeyName" -MemberType Properties) { $_.filePathKeyName } { "File Name: " }
-      $r = Get-ReportTxtDateRange -label "$($_.searchLabelPattern)" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName"
+      $numOfLinesAfterMatch = if(Get-Member -InputObject $_ -Name "numOfLinesAfterMatch" -MemberType Properties) { $_.numOfLinesAfterMatch } { 0 }
+      $r = Get-ReportTxtDateRange -label "$($_.searchLabelPattern)" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName" -numOfLinesAfterMatch $numOfLinesAfterMatch
       New-Item -ItemType Directory -Force -Path "$reportOutDir" | Out-Null
       $r | Out-File -Encoding utf8 -FilePath "$reportOutDir/$($_.fileName).txt"
     }
@@ -76,9 +78,13 @@ function Get-ReportJsonDateRange {
       [Parameter(Mandatory=$false)]
       [string]
       $filePathKeyName="___Log___File___Name___"
+      ,
+      [Parameter(Mandatory=$false)]
+      [string]
+      $numOfLinesAfterMatch=1
   )
 
-  return Get-ReportDateRange -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName" -dataConverter Get-ReportJsonFile | ConvertTo-Json
+  return Get-ReportDateRange -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName" -numOfLinesAfterMatch $numOfLinesAfterMatch -dataConverter Get-ReportJsonFile | ConvertTo-Json
 }
 
 function Get-ReportTxtDateRange {
@@ -107,9 +113,13 @@ function Get-ReportTxtDateRange {
       [Parameter(Mandatory=$false)]
       [string]
       $filePathKeyName="File Name: "
+      ,
+      [Parameter(Mandatory=$false)]
+      [string]
+      $numOfLinesAfterMatch=0
   )
 
-  return Get-ReportDateRange -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName" -dataConverter Get-ReportTxtFile
+  return Get-ReportDateRange -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName" -numOfLinesAfterMatch $numOfLinesAfterMatch -dataConverter Get-ReportTxtFile
 }
 
 function Get-ReportDateRange {
@@ -141,6 +151,10 @@ function Get-ReportDateRange {
       [Parameter(Mandatory=$false)]
       [string]
       $filePathKeyName="___Log___File___Name___"
+      ,
+      [Parameter(Mandatory=$false)]
+      [string]
+      $numOfLinesAfterMatch=1
   )
 
   $dayDirs = @()
@@ -157,7 +171,7 @@ function Get-ReportDateRange {
 
   $datas = @()
   [array]$datas = $dayDirs | ForEach-Object {
-    Get-ReportForDay -dayDir "$($_.FullName)/$runSubDir" -label "$label" -dataConverter $dataConverter
+    Get-ReportForDay -dayDir "$($_.FullName)/$runSubDir" -label "$label" -dataConverter $dataConverter -numOfLinesAfterMatch $numOfLinesAfterMatch
   }
 
   return $datas
@@ -180,12 +194,16 @@ function Get-ReportForDay {
       [Parameter(Mandatory=$false)]
       [string]
       $filePathKeyName="___Log___File___Name___"
+      ,
+      [Parameter(Mandatory=$false)]
+      [string]
+      $numOfLinesAfterMatch=1
   )
   $reports = @()
   $ds = @()
   [array]$reports = Get-ChildItem -Path "$dayDir"
   [array]$ds = $reports | ForEach-Object {
-    (& $dataConverter -label "$label" -filePath "$($_.FullName)" -filePathKeyName "$filePathKeyName")
+    (& $dataConverter -label "$label" -filePath "$($_.FullName)" -filePathKeyName "$filePathKeyName" -numOfLinesAfterMatch $numOfLinesAfterMatch)
   } | Where-Object { $null -ne $_ }
   return $ds
 }
