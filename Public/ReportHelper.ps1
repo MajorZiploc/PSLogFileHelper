@@ -210,7 +210,7 @@ function Get-JsonDataConverter {
 
   Set-StrictMode -Version 3
   try {
-    $json = $data | ForEach-Object {
+    [array]$json = $data | ForEach-Object {
       $j = $_ | ConvertFrom-Json
       Add-Member -InputObject $j -NotePropertyName "$filePathKeyName" -NotePropertyValue "$filePath"
       $j
