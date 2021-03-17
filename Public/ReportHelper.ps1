@@ -84,7 +84,7 @@ function Get-ReportJsonDateRange {
       $numOfLinesAfterMatch=1
   )
 
-  return Get-ReportDateRange -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName" -numOfLinesAfterMatch $numOfLinesAfterMatch -dataConverter Get-ReportJsonFile | ConvertTo-Json
+  return Get-ReportDateRange -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName" -numOfLinesAfterMatch $numOfLinesAfterMatch -fileReportSupplier Get-ReportJsonFile | ConvertTo-Json
 }
 
 function Get-ReportTxtDateRange {
@@ -119,7 +119,7 @@ function Get-ReportTxtDateRange {
       $numOfLinesAfterMatch=0
   )
 
-  return Get-ReportDateRange -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName" -numOfLinesAfterMatch $numOfLinesAfterMatch -dataConverter Get-ReportTxtFile
+  return Get-ReportDateRange -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName" -numOfLinesAfterMatch $numOfLinesAfterMatch -fileReportSupplier Get-ReportTxtFile
 }
 
 function Get-ReportDateRange {
@@ -138,7 +138,7 @@ function Get-ReportDateRange {
       $runSubDir
       ,
       [Parameter(Mandatory=$true)]
-      $dataConverter
+      $fileReportSupplier
       ,
       [Parameter(Mandatory=$true)]
       [datetime]
@@ -171,7 +171,7 @@ function Get-ReportDateRange {
 
   $datas = @()
   [array]$datas = $dayDirs | ForEach-Object {
-    Get-ReportForDay -dayDir "$($_.FullName)/$runSubDir" -label "$label" -dataConverter $dataConverter -numOfLinesAfterMatch $numOfLinesAfterMatch
+    Get-ReportForDay -dayDir "$($_.FullName)/$runSubDir" -label "$label" -fileReportSupplier $fileReportSupplier -numOfLinesAfterMatch $numOfLinesAfterMatch
   }
 
   return $datas
@@ -189,7 +189,7 @@ function Get-ReportForDay {
       $label
       ,
       [Parameter(Mandatory=$true)]
-      $dataConverter
+      $fileReportSupplier
       ,
       [Parameter(Mandatory=$false)]
       [string]
@@ -203,7 +203,7 @@ function Get-ReportForDay {
   $ds = @()
   [array]$reports = Get-ChildItem -Path "$dayDir"
   [array]$ds = $reports | ForEach-Object {
-    (& $dataConverter -label "$label" -filePath "$($_.FullName)" -filePathKeyName "$filePathKeyName" -numOfLinesAfterMatch $numOfLinesAfterMatch)
+    (& $fileReportSupplier -label "$label" -filePath "$($_.FullName)" -filePathKeyName "$filePathKeyName" -numOfLinesAfterMatch $numOfLinesAfterMatch)
   } | Where-Object { $null -ne $_ }
   return $ds
 }
