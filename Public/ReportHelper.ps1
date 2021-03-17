@@ -164,7 +164,7 @@ function Get-ReportDateRange {
 
   $datas = @()
   [array]$datas = $dayDirs | ForEach-Object {
-    Get-ReportForDay -dayDir "$($_.FullName)/$runSubDir" -label "$label" -fileReportSupplier $fileReportSupplier -numOfLinesAfterMatch $numOfLinesAfterMatch
+    Get-ReportForDay -dayDir "$($_.FullName)/$runSubDir" -label "$label" -fileReportSupplier $fileReportSupplier -numOfLinesAfterMatch $numOfLinesAfterMatch -filePathKeyName "$filePathKeyName"
   }
 
   return $datas
