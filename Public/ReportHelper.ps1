@@ -247,7 +247,7 @@ function Get-TxtDataConverter {
       $filePathKeyName="File Name: "
   )
 
-  return "$($filePathKeyName): $filePath`n$($data -join '`n')"
+  return "$($filePathKeyName)$filePath`n$($data -join '`n')"
 }
 
 function Get-ReportJsonFile {
