@@ -29,7 +29,8 @@ function Write-DigestReport {
     [array]$jsonInfo = $reportInfo.json
     $jsonInfo | ForEach-Object {
       $r = $null
-      $r = Get-ReportJsonDateRange -label "$($_.searchLabelPattern)" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate
+      $filePathKeyName = if(Get-Member -InputObject $_ -Name "filePathKeyName" -MemberType Properties) { $_.filePathKeyName } { "___Log___File___Name___" }
+      $r = Get-ReportJsonDateRange -label "$($_.searchLabelPattern)" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName"
       New-Item -ItemType Directory -Force -Path "$reportOutDir" | Out-Null
       $r | Out-File -Encoding utf8 -FilePath "$reportOutDir/$($_.fileName).json"
     }
@@ -37,7 +38,8 @@ function Write-DigestReport {
     [array]$txtInfo = $reportInfo.txt
     $txtInfo | ForEach-Object {
       $r = $null
-      $r = Get-ReportTxtDateRange -label "$($_.searchLabelPattern)" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate
+      $filePathKeyName = if(Get-Member -InputObject $_ -Name "filePathKeyName" -MemberType Properties) { $_.filePathKeyName } { "File Name: " }
+      $r = Get-ReportTxtDateRange -label "$($_.searchLabelPattern)" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName"
       New-Item -ItemType Directory -Force -Path "$reportOutDir" | Out-Null
       $r | Out-File -Encoding utf8 -FilePath "$reportOutDir/$($_.fileName).txt"
     }
@@ -231,7 +233,7 @@ function Get-TxtDataConverter {
       ,
       [Parameter(Mandatory=$false)]
       [string]
-      $filePathKeyName="File Name:"
+      $filePathKeyName="File Name: "
   )
 
   return "$($filePathKeyName): $filePath`n$($data -join '`n')"
