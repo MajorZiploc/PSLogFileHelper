@@ -253,11 +253,15 @@ function Get-ReportJsonFile {
       [Parameter(Mandatory=$false)]
       [string]
       $filePathKeyName="___Log___File___Name___"
+      ,
+      [Parameter(Mandatory=$false)]
+      [string]
+      $numOfLinesAfterMatch=1
   )
 
   $content = Get-Content -Path "$filePath"
   $data = @()
-  [array]$data = ($content | Select-String -Pattern "$label" -Context 0,1 | ForEach-Object {
+  [array]$data = ($content | Select-String -Pattern "$label" -Context 0,$numOfLinesAfterMatch | ForEach-Object {
     $_.Context.PostContext
   })
   if ($null -eq $data) { return $null }
@@ -279,11 +283,17 @@ function Get-ReportTxtFile {
       [Parameter(Mandatory=$false)]
       [string]
       $filePathKeyName="File Name: "
+      ,
+      [Parameter(Mandatory=$false)]
+      [string]
+      $numOfLinesAfterMatch=0
   )
 
   $content = Get-Content -Path "$filePath"
   $data = @()
-  [array]$data = ($content | Select-String -Pattern "$label")
+  [array]$data = ($content | Select-String -Pattern "$label" -Context 0,$numOfLinesAfterMatch | ForEach-Object {
+    "$($_.Line)`n$($_.Context.PostContext -join "`n")`n"
+  })
   if ($null -eq $data) { return $null }
   $data = Get-TxtDataConverter -data $data -filePath "$filePath" -filePathKeyName "$filePathKeyName"
   return $data
