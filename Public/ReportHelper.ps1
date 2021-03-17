@@ -25,7 +25,6 @@ function Write-DigestReport {
       $endReportDate
   )
 
-  Set-StrictMode -Version 3
   try {
     [array]$jsonInfo = $reportInfo.json
     $jsonInfo | ForEach-Object {
@@ -77,7 +76,6 @@ function Get-ReportJsonDateRange {
       $filePathKeyName="___Log___File___Name___"
   )
 
-  Set-StrictMode -Version 3
   return Get-ReportDateRange -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName" -dataConverter Get-ReportJsonFile | ConvertTo-Json
 }
 
@@ -109,7 +107,6 @@ function Get-ReportTxtDateRange {
       $filePathKeyName="File Name: "
   )
 
-  Set-StrictMode -Version 3
   return Get-ReportDateRange -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName" -dataConverter Get-ReportTxtFile
 }
 
@@ -144,7 +141,6 @@ function Get-ReportDateRange {
       $filePathKeyName="___Log___File___Name___"
   )
 
-  Set-StrictMode -Version 3
   $dayDirs = @()
   [array]$dayDirs = Get-ChildItem -Path "$logDir" | Where-Object {
     # Keep folders that can be parsed to days and are in the date range
@@ -208,7 +204,6 @@ function Get-JsonDataConverter {
       $filePathKeyName="___Log___File___Name___"
   )
 
-  Set-StrictMode -Version 3
   try {
     [array]$json = $data | ForEach-Object {
       $j = $_ | ConvertFrom-Json
@@ -239,7 +234,6 @@ function Get-TxtDataConverter {
       $filePathKeyName="File Name:"
   )
 
-  Set-StrictMode -Version 3
   return "$($filePathKeyName): $filePath`n$($data -join '`n')"
 }
 
@@ -259,7 +253,6 @@ function Get-ReportJsonFile {
       $filePathKeyName="___Log___File___Name___"
   )
 
-  Set-StrictMode -Version 3
   $content = Get-Content -Path "$filePath"
   $data = @()
   [array]$data = ($content | Select-String -Pattern "$label" -Context 0,1 | ForEach-Object {
@@ -286,7 +279,6 @@ function Get-ReportTxtFile {
       $filePathKeyName="File Name: "
   )
 
-  Set-StrictMode -Version 3
   $content = Get-Content -Path "$filePath"
   $data = @()
   [array]$data = ($content | Select-String -Pattern "$label")
