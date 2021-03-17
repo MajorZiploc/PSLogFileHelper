@@ -155,7 +155,6 @@ function Get-ReportDateRange {
   [array]$dayDirs = Get-ChildItem -Path "$logDir" | Where-Object {
     # Keep folders that can be parsed to days and are in the date range
     try {
-      $dateFolder = $null
       [datetime]$dateFolder = $_.Name
       return $dateFolder -ge $startReportDate -and $dateFolder -le $endReportDate
     } catch {
