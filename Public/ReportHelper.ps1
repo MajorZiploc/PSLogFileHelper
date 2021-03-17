@@ -71,10 +71,14 @@ function Get-ReportJsonDateRange {
       [Parameter(Mandatory=$true)]
       [string]
       $endReportDate
+      ,
+      [Parameter(Mandatory=$false)]
+      [string]
+      $filePathKeyName="___Log___File___Name___"
   )
 
   Set-StrictMode -Version 3
-  return Get-ReportDateRange -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -dataConverter Get-ReportJsonFile | ConvertTo-Json
+  return Get-ReportDateRange -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName" -dataConverter Get-ReportJsonFile | ConvertTo-Json
 }
 
 function Get-ReportTxtDateRange {
@@ -99,10 +103,14 @@ function Get-ReportTxtDateRange {
       [Parameter(Mandatory=$true)]
       [string]
       $endReportDate
+      ,
+      [Parameter(Mandatory=$false)]
+      [string]
+      $filePathKeyName="File Name: "
   )
 
   Set-StrictMode -Version 3
-  return Get-ReportDateRange -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -dataConverter Get-ReportTxtFile
+  return Get-ReportDateRange -label "$label" -logDir "$logDir" -runSubDir "$runSubDir" -startReportDate $startReportDate -endReportDate $endReportDate -filePathKeyName "$filePathKeyName" -dataConverter Get-ReportTxtFile
 }
 
 function Get-ReportDateRange {
@@ -130,6 +138,10 @@ function Get-ReportDateRange {
       [Parameter(Mandatory=$true)]
       [string]
       $endReportDate
+      ,
+      [Parameter(Mandatory=$false)]
+      [string]
+      $filePathKeyName="___Log___File___Name___"
   )
 
   Set-StrictMode -Version 3
@@ -166,12 +178,16 @@ function Get-ReportForDay {
       ,
       [Parameter(Mandatory=$true)]
       $dataConverter
+      ,
+      [Parameter(Mandatory=$false)]
+      [string]
+      $filePathKeyName="___Log___File___Name___"
   )
   $reports = @()
   $ds = @()
   [array]$reports = Get-ChildItem -Path "$dayDir"
   [array]$ds = $reports | ForEach-Object {
-    (& $dataConverter -label "$label" -filePath "$($_.FullName)")
+    (& $dataConverter -label "$label" -filePath "$($_.FullName)" -filePathKeyName "$filePathKeyName")
   } | Where-Object { $null -ne $_ }
   return $ds
 }
@@ -186,13 +202,17 @@ function Get-JsonDataConverter {
       [Parameter(Mandatory=$true)]
       [string]
       $filePath
+      ,
+      [Parameter(Mandatory=$false)]
+      [string]
+      $filePathKeyName="___Log___File___Name___"
   )
 
   Set-StrictMode -Version 3
   try {
     $json = $data | ForEach-Object {
       $j = $_ | ConvertFrom-Json
-      Add-Member -InputObject $j -NotePropertyName "___Log___File___Name___" -NotePropertyValue "$filePath"
+      Add-Member -InputObject $j -NotePropertyName "$filePathKeyName" -NotePropertyValue "$filePath"
       $j
     }
     # $json = "[$($data -join ',')]" | ConvertFrom-Json
@@ -213,10 +233,14 @@ function Get-TxtDataConverter {
       [Parameter(Mandatory=$true)]
       [string]
       $filePath
+      ,
+      [Parameter(Mandatory=$false)]
+      [string]
+      $filePathKeyName="File Name:"
   )
 
   Set-StrictMode -Version 3
-  return "File Name: $filePath`n$($data -join '`n')"
+  return "$($filePathKeyName): $filePath`n$($data -join '`n')"
 }
 
 function Get-ReportJsonFile {
@@ -229,6 +253,10 @@ function Get-ReportJsonFile {
       [Parameter(Mandatory=$true)]
       [string]
       $filePath
+      ,
+      [Parameter(Mandatory=$false)]
+      [string]
+      $filePathKeyName="___Log___File___Name___"
   )
 
   Set-StrictMode -Version 3
@@ -238,7 +266,7 @@ function Get-ReportJsonFile {
     $_.Context.PostContext
   })
   if ($null -eq $data) { return $null }
-  $data = Get-JsonDataConverter -data $data -filePath "$filePath"
+  $data = Get-JsonDataConverter -data $data -filePath "$filePath" -filePathKeyName "$filePathKeyName"
   return $data
 }
 
@@ -252,6 +280,10 @@ function Get-ReportTxtFile {
       [Parameter(Mandatory=$true)]
       [string]
       $filePath
+      ,
+      [Parameter(Mandatory=$false)]
+      [string]
+      $filePathKeyName="File Name: "
   )
 
   Set-StrictMode -Version 3
@@ -259,6 +291,6 @@ function Get-ReportTxtFile {
   $data = @()
   [array]$data = ($content | Select-String -Pattern "$label")
   if ($null -eq $data) { return $null }
-  $data = Get-TxtDataConverter -data $data -filePath "$filePath"
+  $data = Get-TxtDataConverter -data $data -filePath "$filePath" -filePathKeyName "$filePathKeyName"
   return $data
 }
