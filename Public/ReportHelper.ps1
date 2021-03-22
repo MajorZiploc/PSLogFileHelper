@@ -219,9 +219,12 @@ function Get-JsonDataConverter {
 
   try {
     [array]$json = $data | ForEach-Object {
-      $j = $_ | ConvertFrom-Json
-      Add-Member -InputObject $j -NotePropertyName "$filePathKeyName" -NotePropertyValue "$filePath"
-      $j
+      $js = @()
+      [array]$js = $_ | ConvertFrom-Json
+      $js
+    } | ForEach-Object {
+      Add-Member -InputObject $_ -NotePropertyName "$filePathKeyName" -NotePropertyValue "$filePath"
+      $_
     }
     # $json = "[$($data -join ',')]" | ConvertFrom-Json
     return $json
