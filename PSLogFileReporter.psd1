@@ -12,7 +12,7 @@
 RootModule = 'PSLogFileReporter.psm1'
 
 # Version number of this module.
-ModuleVersion = '5.1'
+ModuleVersion = '1.0.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -27,7 +27,7 @@ Author = 'Manyu Lakhotia'
 CompanyName = 'N/A'
 
 # Copyright statement for this module
-Copyright = 'N/A'
+Copyright = '(c) 2021 Manyu Lakhotia. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Used to create reports from log files following conventions from modules created from powershell_scaffolder'
@@ -82,13 +82,13 @@ FunctionsToExport = @(
 )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = '*'
+CmdletsToExport = @()
 
 # Variables to export from this module
-VariablesToExport = '*'
+VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = '*'
+AliasesToExport = @()
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
@@ -111,7 +111,7 @@ PrivateData = @{
         # LicenseUri = ''
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/MajorZiploc/PSLogFileHelper'
 
         # A URL to an icon representing this module.
         # IconUri = ''
