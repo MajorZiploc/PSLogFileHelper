@@ -10,15 +10,3 @@
 - VSCode
 - Powershell extension for vscode
 
-## Publishing to PSGallery
-REQUIRES PSCORE
-
-```
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-
-Import-Module -Name PSLogFileReporter
-
-Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force # DOESNT WORK FOR NONADMIN
-
-Publish-Module -name PSLogFileReporter -NuGetApiKey 'api_key'
-
