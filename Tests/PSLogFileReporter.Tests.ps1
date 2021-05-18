@@ -1,4 +1,4 @@
-﻿$PSVersion = $PSVersionTable.PSVersion.Major
+$PSVersion = $PSVersionTable.PSVersion.Major
 # import the file with the functions you are testing
 # . $PSScriptRoot"/../../Public/Get-Num.ps1"
 Describe "<name_of_function1> PS$PSVersion Integrations tests" { 

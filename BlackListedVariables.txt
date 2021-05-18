@@ -1,4 +1,4 @@
-﻿
+
 These variables are set in the public invoke functions
 If they are overridden, then it can lead to unexpected behavior
 
