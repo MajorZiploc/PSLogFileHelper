@@ -10,7 +10,7 @@ lint:
   Import-Module -Name PSScriptAnalyzer; ("./Public", "./Private") | ForEach-Object { Invoke-ScriptAnalyzer -Path "$_" };
 
 run:
-  ./Public/Invoke-CallTakingReboot.ps1
+  Write-Error "This is a library! No functions to run directly!"
 
 test:
   Invoke-Pester
